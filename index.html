@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to ASCII Art Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/figlet/1.2.4/figlet.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #282c34;
+            color: #fff;
+        }
+        header {
+            background-color: #1f2229;
+            padding: 15px 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #00d4ff;
+        }
+        main {
+            padding: 20px;
+            max-width: 900px;
+            margin: 20px auto;
+        }
+        .controls {
+            margin-bottom: 20px;
+        }
+        textarea, select, input, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        button {
+            background-color: #00d4ff;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #00b8cc;
+        }
+        #output {
+            background: #1f2229;
+            color: #00ff00;
+            font-family: monospace;
+            white-space: pre-wrap;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            font-size: 14px;
+            background-color: #1f2229;
+            color: #999;
+            position: relative;
+        }
+        footer a {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Text to ASCII Art Generator</h1>
+    </header>
+    <main>
+        <div class="controls">
+            <textarea id="textInput" placeholder="Enter your text here..."></textarea>
+            <select id="fontSelect">
+                <option value="Standard">Standard</option>
+                <option value="Slant">Slant</option>
+                <option value="Big">Big</option>
+                <option value="Small">Small</option>
+                <option value="Banner">Banner</option>
+                <option value="Ghost">Ghost</option>
+                <option value="DOS_Rebel">DOS Rebel</option>
+                <option value="Roman">Roman</option>
+                <option value="3D">3D</option>
+                <option value="Blocks">Blocks</option>
+            </select>
+            <input id="charWidth" type="number" placeholder="Character Width (optional)" min="1">
+            <input id="charHeight" type="number" placeholder="Character Height (optional)" min="1">
+            <button id="convertBtn">Generate ASCII Art</button>
+        </div>
+        <pre id="output">Your ASCII art will appear here...</pre>
+    </main>
+    <footer>
+        <p>
+            Made with ❤️ by You. Inspired by 
+            <a href="https://patorjk.com" target="_blank">Patorjk</a>.
+        </p>
+    </footer>
+    <script>
+        // Populate fonts dynamically
+        figlet.defaults({ width: 80 });
+        figlet.loadFont("Standard", () => {}); // Preload default font
+
+        const textInput = document.getElementById("textInput");
+        const fontSelect = document.getElementById("fontSelect");
+        const charWidthInput = document.getElementById("charWidth");
+        const charHeightInput = document.getElementById("charHeight");
+        const output = document.getElementById("output");
+        const convertBtn = document.getElementById("convertBtn");
+
+        convertBtn.addEventListener("click", () => {
+            const text = textInput.value.trim();
+            const font = fontSelect.value;
+            const width = charWidthInput.value || null;
+            const height = charHeightInput.value || null;
+
+            if (!text) {
+                alert("Please enter some text!");
+                return;
+            }
+
+            figlet.defaults({
+                width: width ? parseInt(width) : undefined,
+                height: height ? parseInt(height) : undefined,
+            });
+
+            figlet.loadFont(font, (err) => {
+                if (err) {
+                    output.textContent = "Error loading font!";
+                    return;
+                }
+                figlet.text(text, font, (err, asciiArt) => {
+                    if (err) {
+                        output.textContent = "Error generating ASCII art!";
+                        return;
+                    }
+                    output.textContent = asciiArt;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
